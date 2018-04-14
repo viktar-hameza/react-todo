@@ -6,6 +6,7 @@ import Component from './Component';
 import todos from './todos'
 import Header from './components/Header';
 import Todo from './components/Todo';
+import Form from './components/Form'
 import './style.scss';
 
 // function App() {
@@ -28,6 +29,12 @@ class App extends React.Component {
     };
     this.handelStatusChange = this.handelStatusChange.bind(this);
     this.handelDelete = this.handelDelete.bind(this);
+    this.handleAdd = this.handleAdd.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
+  }
+  nextId() {
+    this._nextId = this._nextId || 4;
+    return this._nextId++;
   }
   handelStatusChange(id) {
     let todos = this.state.todos.map(todo => {
@@ -43,6 +50,28 @@ class App extends React.Component {
     let todos = this.state.todos.filter(todo => todo.id !== id)
     this.setState({ todos: todos });
   }
+  handleAdd(title) {
+    // console.log(title);
+
+    let todo = {
+      id: this.nextId(),
+      title: title,
+      completed: false
+    }
+    let todos = [...this.state.todos, todo]
+
+    this.setState({todos});
+  }
+  handleEdit(id, title) {
+    let todos = this.state.todos.map(todo => {
+      if (todo.id === id) {
+        todo.title = title;
+      }
+      return todo;
+    });
+
+    this.setState({ todos });
+  }
   render() {
     return (
       <main>
@@ -57,11 +86,13 @@ class App extends React.Component {
               completed={todo.completed}
               onStatusChange={this.handelStatusChange}
               onDelete={this.handelDelete}
+              onEdit={this.handleEdit}
             />)
           }
 
 
         </section>
+        <Form onAdd={this.handleAdd}/>
       </main>
     )
   }
